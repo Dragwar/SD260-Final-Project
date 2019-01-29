@@ -6,17 +6,22 @@ class BookShelf extends Component {
     const { typeOfShelf, books, handleSelectBookType } = this.props;
     let humanReadableVersion;
 
-    if (typeOfShelf === 'currentlyReading') {
-      humanReadableVersion = 'Currently Reading';
+    switch (typeof typeOfShelf === 'string') {
+      case typeOfShelf === 'currentlyReading':
+        humanReadableVersion = 'Currently Reading';
+        break;
 
-    } else if (typeOfShelf === 'wantToRead') {
-      humanReadableVersion = 'Want To Read';
+      case typeOfShelf === 'wantToRead':
+        humanReadableVersion = 'Want To Read';
+        break;
 
-    } else if (typeOfShelf === 'read') {
-      humanReadableVersion = 'Read';
-      
-    } else {
-      humanReadableVersion = typeOfShelf;
+      case typeOfShelf === 'read':
+        humanReadableVersion = 'Read';
+        break;
+
+      default:
+        humanReadableVersion = typeOfShelf;
+        break;
     }
 
     return (

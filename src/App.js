@@ -7,6 +7,10 @@ import ListBooks from './ListBooks';
 
 class BooksApp extends React.Component {
   state = {
+    /**
+     * @NOTE ***state.results*** could just be in the search page component but 
+     * the search results will disappear after switching pages if it was in there
+     */
     results: [], // stores all current book search results (array of search result objects)
     myListOfBooks: [], // stores all the user selected books (array of book objects)
     allShelfHeaders: [], // stores all book shelf headers (array of header strings)
@@ -70,7 +74,7 @@ class BooksApp extends React.Component {
   setShelfHeaders = async () => {
     let shelfHeaders = await BooksAPI.getAll().then((data) => {
       let myShelfHeaders = [...new Set(data.map((ele) => ele = ele.shelf))];
-      return shelfHeaders = [...myShelfHeaders];
+      return [...myShelfHeaders];
     });
 
     this.setState(({
@@ -87,7 +91,6 @@ class BooksApp extends React.Component {
           exact path="/"
           render={() => (
             <ListBooks
-              results={results}
               myListOfBooks={myListOfBooks}
               allShelfHeaders={allShelfHeaders}
               handleSelectBookType={this.handleSelectBookType}
