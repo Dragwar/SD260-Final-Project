@@ -19,17 +19,21 @@ class Book extends Component {
                       background: "gray",
                       display: "flex",
                       justifyContent: "center",
-                      alignItems: "center"
+                      alignItems: "center",
                     }
                   }
                 >
-                  No Image
+                  <span>No Image</span>
                 </div>
               ) : (
                   <div
                     className="book-cover"
                     style={
-                      { width: 128, height: 192, backgroundImage: `url(${book.imageLinks.thumbnail})` }
+                      {
+                        width: 128,
+                        height: 192,
+                        backgroundImage: `url(${book.imageLinks.thumbnail})`,
+                      }
                     }
                   >
                   </div>
@@ -37,7 +41,7 @@ class Book extends Component {
             }
             <div className="book-shelf-changer">
               <select onChange={(event) => handleSelectBookType(event, book)}>
-                <option value="move" defaultValue disabled>Move to...</option>
+                <option value="move" disabled>Move to...</option>
                 <option value="">-----------------------</option>
                 <option value="currentlyReading">Currently Reading</option>
                 <option value="wantToRead">Want to Read</option>

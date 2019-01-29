@@ -7,7 +7,7 @@ import ListBooks from './ListBooks';
 
 class BooksApp extends React.Component {
   state = {
-    results: [], // stores all book search results per session (array of search result objects)
+    results: [], // stores all current book search results (array of search result objects)
     myListOfBooks: [], // stores all the user selected books (array of book objects)
     allShelfHeaders: [], // stores all book shelf headers (array of header strings)
     fetchError: "", // stores any error during search fetch
@@ -26,14 +26,17 @@ class BooksApp extends React.Component {
 
     if (data instanceof Array) {
       this.setState((prevState) => ({
-        results: [...data, ...prevState.results],
+        results: [...data],
         fetchError: "",
       }));
 
-    } else {
+    } else if (data.error !== "") {
       this.setState((prevState) => ({
         fetchError: data.error,
       }));
+
+    } else {
+      alert("something went wrong");
     }
   }
 

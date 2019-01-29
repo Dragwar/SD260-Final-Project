@@ -13,7 +13,10 @@ class SearchPage extends Component {
   componentDidMount() {
     this.queryInput.current.focus();
 
-    // When "Enter" is pressed then it fetches results based on query
+    /**
+     * @description
+     * When "Enter" is pressed then it fetches results based on query
+     */
     this.queryInput.current.addEventListener('keyup', (e) => {
       if (e.key === "Enter") {
         this.handleQueryChange();
@@ -24,11 +27,29 @@ class SearchPage extends Component {
   /**
    * @description
    * Simple function that just sets state to the query search input value
+   * then invokes the _this.handleQueryChange();_ to fetch book results
+   * based on the current query value
+   * ____
+   * @explain Why async await?
+   * 1. 
+   * This is an async function because if the query state (_q-state_)
+   * takes time to update with the user's keystrokes meaning
+   * if I didn't await for the _this.setState((//...))_ then the
+   * _this.handleQueryChange();_ function will get called before the _q-state_
+   * gets set. Which will search with the previous _q-state_ value. (not intended)
+   * 
+   * 2. 
+   * With awaiting the _this.setState((//...))_ then the 
+   * _this.handleQueryChange();_ will get called when the _q-state_
+   * has been set with the newest input val set by the user (intended)
+   * ____
    */
-  handleChange = (tgt) => {
-    this.setState((prevState) => ({
+  handleChange = async (tgt) => {
+    await this.setState((prevState) => ({
       [tgt.name]: tgt.value
     }));
+
+    this.handleQueryChange();
   }
 
   /**
@@ -46,8 +67,6 @@ class SearchPage extends Component {
       BooksAPI.search(userQuery)
         .then(data => this.props.handleFetchResults(data))
         .catch(console.warn);
-    } else {
-      alert('Please Do Not Leave Search Empty');
     }
   }
 
@@ -65,7 +84,6 @@ class SearchPage extends Component {
               name="query"
               placeholder="Search by title or author"
               onChange={(e) => this.handleChange(e.target)}
-              onDoubleClick={this.handleQueryChange}
               value={this.state.query}
               ref={this.queryInput}
               list="allSearchTermsList"
@@ -78,7 +96,7 @@ class SearchPage extends Component {
           <ol className="books-grid">
             {
               fetchError !== "" ? (
-                <h2 style={{ color: "red" }}>{fetchError}</h2>
+                <h2 style={{ color: "red", fontStyle: "italic", fontVariant: "all-small-caps" }}>{fetchError}</h2>
               ) : (
                   results.length > 0 && results.map((book, index) => (
                     <Book
