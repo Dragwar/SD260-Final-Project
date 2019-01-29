@@ -5,16 +5,28 @@ import allSearchTerms from './SEARCH_TERMS';
 import Book from './Book';
 
 class SearchPage extends Component {
+  state = {
+    query: ""
+  }
   queryInput = React.createRef();
 
   componentDidMount() {
     this.queryInput.current.focus();
+    // When "Enter" is pressed then it fetches results based on query
+    document.body.addEventListener('keyup', (e) => { if (e.key === "Enter") { this.handleQueryChange() } })
+  }
+
+  handleChange = (tgt) => {
+    this.setState((prevState) => ({
+      [tgt.name]: tgt.value
+    }));
   }
 
   handleQueryChange = () => {
-    let query = this.queryInput.current.value;
-    if (query !== "") {
-      BooksAPI.search(query)
+    let userQuery = this.state.query;
+    console.log(userQuery);
+    if (userQuery !== "") {
+      BooksAPI.search(userQuery)
         .then(data => this.props.handleFetchResults(data))
         .catch(console.warn);
     }
@@ -44,13 +56,18 @@ class SearchPage extends Component {
                 ))
               }
             </datalist>
+
             <input
               type="text"
+              name="query"
               placeholder="Search by title or author"
-              onChange={this.handleQueryChange}
+              onChange={(e) => this.handleChange(e.target)}
+              onDoubleClick={this.handleQueryChange}
+              value={this.state.query}
               list="allSearchTermsList"
               ref={this.queryInput}
             />
+
 
           </div>
         </div>

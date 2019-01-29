@@ -14,22 +14,50 @@ class BooksApp extends React.Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
     results: [],
+    myListOfBooks: [],
+    allShelfHeaders: [],
   }
 
   handleFetchResults = (data) => {
+    console.log('fetch results:', data);
     this.setState((prevState) => ({
       results: [...data, ...prevState.results],
     }));
   }
 
-  handleSelectBookType = (event) => {
-    console.log(event.target.value);
+  setMyBooks = async () => {
+    let myBooks = await BooksAPI.getAll().then((data) => data);
+
+    this.setState(({
+      myListOfBooks: myBooks
+    }));
+  }
+
+  handleSelectBookType = (event, book) => {
+    console.log('book:', book, event.target.value);
+    BooksAPI.update(book, event.target.value).then(console.log)
+    this.setMyBooks();
+  }
+
+  setShelfHeaders = async () => {
+    let shelfHeaders = await BooksAPI.getAll().then((data) => {
+      let myShelfHeaders = [...new Set(data.map((ele) => ele = ele.shelf))]
+      return shelfHeaders = [...myShelfHeaders];
+    });
+
+    this.setState(({
+      allShelfHeaders: shelfHeaders
+    }));
+  }
+
+  componentDidMount() {
+    this.setMyBooks();
+    this.setShelfHeaders();
   }
 
   render() {
-    const { results } = this.state;
-    BooksAPI.getAll().then(myBooks => console.log('myBooks:', myBooks));
-
+    const { results, myListOfBooks, allShelfHeaders } = this.state;
+    
     return (
       <div className="app App">
         <Route
@@ -37,6 +65,10 @@ class BooksApp extends React.Component {
           component={() => (
             <ListBooks
               results={results}
+              handleSelectBookType={this.handleSelectBookType}
+              myListOfBooks={myListOfBooks}
+              setMyBooks={this.setMyBooks}
+              allShelfHeaders={allShelfHeaders}
             />
           )}
         />
