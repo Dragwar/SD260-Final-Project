@@ -12,8 +12,13 @@ class SearchPage extends Component {
 
   componentDidMount() {
     this.queryInput.current.focus();
+
     // When "Enter" is pressed then it fetches results based on query
-    document.body.addEventListener('keyup', (e) => { if (e.key === "Enter") { this.handleQueryChange() } })
+    this.queryInput.current.addEventListener('keyup', (e) => {
+      if (e.key === "Enter") {
+        this.handleQueryChange();
+      }
+    });
   }
 
   handleChange = (tgt) => {
@@ -29,12 +34,14 @@ class SearchPage extends Component {
       BooksAPI.search(userQuery)
         .then(data => this.props.handleFetchResults(data))
         .catch(console.warn);
+    } else {
+      console.log('none');
     }
   }
 
 
   render() {
-    const { results, handleSelectBookType } = this.props;
+    const { results, handleSelectBookType, fetchError } = this.props;
 
     return (
       <div className="search-books SearchPage">
@@ -72,6 +79,11 @@ class SearchPage extends Component {
           </div>
         </div>
         <div className="search-books-results">
+          {
+            fetchError !== "" && (
+              <h2>{fetchError}</h2>
+            )
+          }
           <ol className="books-grid">
             {
               results.length > 0 && results.map((book, index) => (

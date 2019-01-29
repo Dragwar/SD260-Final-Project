@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 class Book extends Component {
   render() {
     const { book, handleSelectBookType } = this.props;
-    
+
     return (
       <li className="Book">
         <div className="book">
@@ -17,7 +17,8 @@ class Book extends Component {
             </div>
             <div className="book-shelf-changer">
               <select onChange={(event) => handleSelectBookType(event, book)}>
-                <option value="move">Move to...</option>
+                <option value="move" defaultValue disabled>Move to...</option>
+                <option value="">-----------------------</option>
                 <option value="currentlyReading">Currently Reading</option>
                 <option value="wantToRead">Want to Read</option>
                 <option value="read">Read</option>

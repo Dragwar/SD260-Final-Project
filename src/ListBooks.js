@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import * as BooksAPI from './BooksAPI';
 import { Link } from 'react-router-dom';
 import BookShelf from './BookShelf';
 
 class ListBooks extends Component {
   render() {
-    const { results, handleSelectBookType, myListOfBooks, allShelfHeaders } = this.props;
-
+    const { handleSelectBookType, myListOfBooks, allShelfHeaders, setMyBooks } = this.props;
+    setMyBooks();
 
     return (
       <div className="list-books ListBooks">
@@ -16,7 +15,6 @@ class ListBooks extends Component {
 
         <div className="list-books-content">
           <div>
-
             {
               allShelfHeaders.map((header, index) => (
                 <BookShelf
@@ -27,7 +25,6 @@ class ListBooks extends Component {
                 />
               ))
             }
-
           </div>
         </div>
 

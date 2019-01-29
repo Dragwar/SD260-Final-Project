@@ -13,16 +13,26 @@ class BooksApp extends React.Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    results: [],
+    results: [], // stores all book search results per session
     myListOfBooks: [],
     allShelfHeaders: [],
+    fetchError: "",
   }
 
   handleFetchResults = (data) => {
     console.log('fetch results:', data);
-    this.setState((prevState) => ({
-      results: [...data, ...prevState.results],
-    }));
+
+    if (data instanceof Array) {
+      this.setState((prevState) => ({
+        results: [...data, ...prevState.results],
+        fetchError: "",
+      }));
+
+    } else {
+      this.setState((prevState) => ({
+        fetchError: data.error,
+      }));
+    }
   }
 
   setMyBooks = async () => {
@@ -34,7 +44,6 @@ class BooksApp extends React.Component {
   }
 
   handleSelectBookType = (event, book) => {
-    console.log('book:', book, event.target.value);
     BooksAPI.update(book, event.target.value).then(console.log)
     this.setMyBooks();
   }
@@ -56,13 +65,13 @@ class BooksApp extends React.Component {
   }
 
   render() {
-    const { results, myListOfBooks, allShelfHeaders } = this.state;
+    const { results, myListOfBooks, allShelfHeaders, fetchError } = this.state;
     
     return (
       <div className="app App">
         <Route
           exact path="/"
-          component={() => (
+          render={() => (
             <ListBooks
               results={results}
               handleSelectBookType={this.handleSelectBookType}
@@ -74,11 +83,12 @@ class BooksApp extends React.Component {
         />
         <Route
           exact path="/search"
-          component={() => (
+          render={() => (
             <SearchPage
               results={results}
               handleFetchResults={this.handleFetchResults}
               handleSelectBookType={this.handleSelectBookType}
+              fetchError={fetchError}
             />
           )}
         />
