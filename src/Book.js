@@ -8,13 +8,33 @@ class Book extends Component {
       <li className="Book">
         <div className="book">
           <div className="book-top">
-            <div
-              className="book-cover"
-              style={
-                { width: 128, height: 192, backgroundImage: `url(${book.imageLinks.thumbnail})` }
-              }
-            >
-            </div>
+            {
+              !book.imageLinks ? (
+                <div
+                  className="book-cover"
+                  style={
+                    {
+                      width: 128,
+                      height: 192,
+                      background: "gray",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center"
+                    }
+                  }
+                >
+                  No Image
+                </div>
+              ) : (
+                  <div
+                    className="book-cover"
+                    style={
+                      { width: 128, height: 192, backgroundImage: `url(${book.imageLinks.thumbnail})` }
+                    }
+                  >
+                  </div>
+                )
+            }
             <div className="book-shelf-changer">
               <select onChange={(event) => handleSelectBookType(event, book)}>
                 <option value="move" defaultValue disabled>Move to...</option>
