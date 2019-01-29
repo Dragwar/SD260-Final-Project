@@ -7,18 +7,20 @@ import ListBooks from './ListBooks';
 
 class BooksApp extends React.Component {
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    results: [], // stores all book search results per session
-    myListOfBooks: [],
-    allShelfHeaders: [],
-    fetchError: "",
+    results: [], // stores all book search results per session (array of search result objects)
+    myListOfBooks: [], // stores all the user selected books (array of book objects)
+    allShelfHeaders: [], // stores all book shelf headers (array of header strings)
+    fetchError: "", // stores any error during search fetch
   }
 
+  /**
+   * @description
+   * 
+   * **HANDLES THE SEARCH PAGE FETCH**
+   * 
+   * when the _data_ is an Array type then it is most likely a successful search fetch
+   * when the _data_ is an Object type then it is most likely an error
+   */
   handleFetchResults = (data) => {
     console.log('fetch results:', data);
 
@@ -35,38 +37,47 @@ class BooksApp extends React.Component {
     }
   }
 
+  /**
+   * @description
+   * waits until the _getAll_ fetch has fetched all _myBooks_ then sets state _myListOfBooks_ with said _myBooks_
+   */
   setMyBooks = async () => {
-    let myBooks = await BooksAPI.getAll().then((data) => data);
+    let myBooks = await BooksAPI.getAll().catch(console.warn);
 
     this.setState(({
-      myListOfBooks: myBooks
+      myListOfBooks: myBooks,
     }));
   }
 
-  handleSelectBookType = (event, book) => {
-    BooksAPI.update(book, event.target.value).then(console.log)
+  /**
+   * @description
+   * waits until the updates to the api is completely done,
+   * then re-renders the page with the changes that the user made
+   */
+  handleSelectBookType = async (event, book) => {
+    await BooksAPI.update(book, event.target.value).catch(console.warn);
+    this.setShelfHeaders();
     this.setMyBooks();
   }
 
+  /**
+   * @description
+   * Gets and sets all bookshelf headers in state _AllShelfHeaders_
+   */
   setShelfHeaders = async () => {
     let shelfHeaders = await BooksAPI.getAll().then((data) => {
-      let myShelfHeaders = [...new Set(data.map((ele) => ele = ele.shelf))]
+      let myShelfHeaders = [...new Set(data.map((ele) => ele = ele.shelf))];
       return shelfHeaders = [...myShelfHeaders];
     });
 
     this.setState(({
-      allShelfHeaders: shelfHeaders
+      allShelfHeaders: shelfHeaders,
     }));
-  }
-
-  componentDidMount() {
-    this.setMyBooks();
-    this.setShelfHeaders();
   }
 
   render() {
     const { results, myListOfBooks, allShelfHeaders, fetchError } = this.state;
-    
+
     return (
       <div className="app App">
         <Route
@@ -74,10 +85,11 @@ class BooksApp extends React.Component {
           render={() => (
             <ListBooks
               results={results}
-              handleSelectBookType={this.handleSelectBookType}
               myListOfBooks={myListOfBooks}
-              setMyBooks={this.setMyBooks}
               allShelfHeaders={allShelfHeaders}
+              handleSelectBookType={this.handleSelectBookType}
+              setMyBooks={this.setMyBooks}
+              setShelfHeaders={this.setShelfHeaders}
             />
           )}
         />
@@ -86,9 +98,9 @@ class BooksApp extends React.Component {
           render={() => (
             <SearchPage
               results={results}
+              fetchError={fetchError}
               handleFetchResults={this.handleFetchResults}
               handleSelectBookType={this.handleSelectBookType}
-              fetchError={fetchError}
             />
           )}
         />

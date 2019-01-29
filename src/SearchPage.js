@@ -21,24 +21,35 @@ class SearchPage extends Component {
     });
   }
 
+  /**
+   * @description
+   * Simple function that just sets state to the query search input value
+   */
   handleChange = (tgt) => {
     this.setState((prevState) => ({
       [tgt.name]: tgt.value
     }));
   }
 
+  /**
+   * @description
+   * Only gets called when input field is double clicked or,
+   * the user presses "Enter" while the input field has focus.
+   * 
+   * fetches all relevant books from api with _BooksAPI.search(userQuery)_ and _this.props.handleFetchResults(data)_ 
+   */
   handleQueryChange = () => {
     let userQuery = this.state.query;
-    console.log(userQuery);
-    if (userQuery !== "") {
+    console.log({ query: userQuery });
+
+    if (userQuery !== "" && typeof userQuery === 'string') {
       BooksAPI.search(userQuery)
         .then(data => this.props.handleFetchResults(data))
         .catch(console.warn);
     } else {
-      console.log('none');
+      alert('Please Do Not Leave Search Empty');
     }
   }
-
 
   render() {
     const { results, handleSelectBookType, fetchError } = this.props;
@@ -48,21 +59,6 @@ class SearchPage extends Component {
         <div className="search-books-bar">
           <Link className="close-search" to="/">Close</Link>
           <div className="search-books-input-wrapper">
-            {/*
-              NOTES: The search from BooksAPI is limited to a particular set of search terms.
-              You can find these search terms here:
-              https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-              However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-              you don't find a specific author or title. Every search is limited by search terms.
-            */}
-            <datalist id="allSearchTermsList">
-              {
-                allSearchTerms.map((term, index) => (
-                  <option key={index} value={term} />
-                ))
-              }
-            </datalist>
 
             <input
               type="text"
@@ -71,32 +67,40 @@ class SearchPage extends Component {
               onChange={(e) => this.handleChange(e.target)}
               onDoubleClick={this.handleQueryChange}
               value={this.state.query}
-              list="allSearchTermsList"
               ref={this.queryInput}
+              list="allSearchTermsList"
             />
-
 
           </div>
         </div>
+
         <div className="search-books-results">
-          {
-            fetchError !== "" && (
-              <h2>{fetchError}</h2>
-            )
-          }
           <ol className="books-grid">
             {
-              results.length > 0 && results.map((book, index) => (
-                <Book
-                  key={index}
-                  index={index}
-                  book={book}
-                  handleSelectBookType={handleSelectBookType}
-                />
-              ))
+              fetchError !== "" ? (
+                <h2 style={{ color: "red" }}>{fetchError}</h2>
+              ) : (
+                  results.length > 0 && results.map((book, index) => (
+                    <Book
+                      key={index}
+                      index={index}
+                      book={book}
+                      handleSelectBookType={handleSelectBookType}
+                    />
+                  ))
+                )
             }
           </ol>
         </div>
+
+        <datalist id="allSearchTermsList">
+          {
+            allSearchTerms && allSearchTerms.map((term, index) => (
+              <option key={index} value={term} />
+            ))
+          }
+        </datalist>
+
       </div>
     );
   }

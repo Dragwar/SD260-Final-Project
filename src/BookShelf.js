@@ -14,6 +14,9 @@ class BookShelf extends Component {
 
     } else if (typeOfShelf === 'read') {
       humanReadableVersion = 'Read';
+      
+    } else {
+      humanReadableVersion = typeOfShelf;
     }
 
     return (

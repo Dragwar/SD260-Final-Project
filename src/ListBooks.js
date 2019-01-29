@@ -3,9 +3,13 @@ import { Link } from 'react-router-dom';
 import BookShelf from './BookShelf';
 
 class ListBooks extends Component {
+  componentDidMount() {
+    this.props.setShelfHeaders();
+    this.props.setMyBooks();
+  }
+
   render() {
-    const { handleSelectBookType, myListOfBooks, allShelfHeaders, setMyBooks } = this.props;
-    setMyBooks();
+    const { handleSelectBookType, myListOfBooks, allShelfHeaders } = this.props;
 
     return (
       <div className="list-books ListBooks">
@@ -20,7 +24,7 @@ class ListBooks extends Component {
                 <BookShelf
                   key={index}
                   typeOfShelf={header}
-                  books={myListOfBooks.filter(ele => ele.shelf === header ? ele : null)}
+                  books={myListOfBooks.filter(ele => ele.shelf === header)}
                   handleSelectBookType={handleSelectBookType}
                 />
               ))
