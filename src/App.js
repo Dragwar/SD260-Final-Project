@@ -35,6 +35,8 @@ class BooksApp extends React.Component {
         fetchError: "",
       }));
 
+      this.updateSearchBookIcons();
+
     } else if (data instanceof Object && data.error !== "") {
       this.setState((prevState) => ({
         fetchError: data.error,
@@ -71,8 +73,8 @@ class BooksApp extends React.Component {
 
     this.setState((prevState) => {
       let arr = [...prevState.results];
-      let foundObjIndex = prevState.results.indexOf(book);
       let foundObj = { ...prevState.results.find((bk) => bk.id === book.id) };
+      let foundObjIndex = prevState.results.indexOf(book);
 
       if (event.target.value) {
         foundObj.shelf = event.target.value;
@@ -97,6 +99,34 @@ class BooksApp extends React.Component {
 
     this.setState(({
       allShelfHeaders: shelfHeaders,
+    }));
+  }
+
+  /**
+   * @description
+   * gets the myBooks again then checks if the book id exists in the _this.state.results_ arr
+   * then replaces the matching ids with the book obj from _this.state.myListOfBooks_ in other words 
+   * books that exist in _this.state.myListOfBooks_ will replace the identical ones in
+   * the _this.state.results_.
+   */
+  updateSearchBookIcons = async () => {
+    let arrOfMyListOfBooks = await BooksAPI.getAll();
+    let arrOfMyListOfBookIDs = arrOfMyListOfBooks.map((bk) => bk.id);
+
+    let updatedArrayWithBookIcons = this.state.results.map((ele) => {
+      let bookClone = { ...ele };
+
+      if (!arrOfMyListOfBookIDs.includes(bookClone.id)) {
+        return bookClone;
+
+      } else {
+        bookClone.shelf = arrOfMyListOfBooks.find((myBook) => myBook.id === bookClone.id).shelf;
+        return bookClone;
+      }
+    });
+
+    this.setState((prevState) => ({
+      results: updatedArrayWithBookIcons,
     }));
   }
 
