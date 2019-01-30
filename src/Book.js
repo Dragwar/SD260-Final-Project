@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './Book.css'
 
 class Book extends Component {
   render() {
@@ -32,14 +33,14 @@ class Book extends Component {
                       {
                         width: 128,
                         height: 192,
-                        backgroundImage: `url(${book.imageLinks.thumbnail.replace('http://','https://')})`,
+                        backgroundImage: `url(${book.imageLinks.thumbnail.replace('http://', 'https://')})`,
                       }
                     }
                   >
                   </div>
                 )
             }
-            <div className="book-shelf-changer">
+            <div className={`book-shelf-changer ${book.shelf}`}>
               <select onChange={(event) => handleSelectBookType(event, book)}>
                 <option value="move" disabled>Move to...</option>
                 <option value="">-----------------------</option>

@@ -30,11 +30,12 @@ class BooksApp extends React.Component {
 
     if (data instanceof Array) {
       this.setState((prevState) => ({
-        results: [...data],
+        // adds a default shelf property to "none" to each object
+        results: [...data.map(ele => ({ ...ele, shelf: "none" }))],
         fetchError: "",
       }));
 
-    } else if (data.error !== "") {
+    } else if (data instanceof Object && data.error !== "") {
       this.setState((prevState) => ({
         fetchError: data.error,
       }));
@@ -60,9 +61,26 @@ class BooksApp extends React.Component {
    * @description
    * waits until the updates to the api is completely done,
    * then re-renders the page with the changes that the user made
+   * ____
+   * If the user changes the type of bookShelf than the icon
+   * will be updated via line 72 - 82
    */
   handleSelectBookType = async (event, book) => {
+    event.persist();// is needed to retain an event (for react)
     await BooksAPI.update(book, event.target.value).catch(console.warn);
+
+    this.setState((prevState) => {
+      let arr = [...prevState.results];
+      let foundObjIndex = prevState.results.indexOf(book);
+      let foundObj = { ...prevState.results.find((bk) => bk.id === book.id) };
+
+      if (event.target.value) {
+        foundObj.shelf = event.target.value;
+        arr[foundObjIndex] = foundObj;
+        return { results: arr };
+      }
+    });
+
     this.setShelfHeaders();
     this.setMyBooks();
   }

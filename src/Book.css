@@ -1,3 +1,17 @@
-.Book {
+div.book div.book-shelf-changer.currentlyReading {
+  background-image: url('./icons/book-open-solid.svg');
+}
 
+div.book div.book-shelf-changer.wantToRead {
+  background-image: url('./icons/bookmark-regular.svg');
+  background-size: 40%;
+}
+
+div.book div.book-shelf-changer.read {
+  background-image: url('./icons/book-solid.svg');
+}
+
+div.book div.book-shelf-changer.undefined, div.book div.book-shelf-changer.none {
+  background-image: url('./icons/arrow-drop-down.svg');
+  background-size: 80%;
 }
