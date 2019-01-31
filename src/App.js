@@ -26,8 +26,6 @@ class BooksApp extends React.Component {
    * when the _data_ is an Object type then it is most likely an error
    */
   handleFetchResults = (data) => {
-    console.log('fetch results:', data);
-
     if (data instanceof Array) {
       this.setState((prevState) => ({
         // adds a default shelf property to "none" to each object
@@ -155,6 +153,7 @@ class BooksApp extends React.Component {
               fetchError={fetchError}
               handleFetchResults={this.handleFetchResults}
               handleSelectBookType={this.handleSelectBookType}
+              updateSearchBookIcons={this.updateSearchBookIcons}
             />
           )}
         />

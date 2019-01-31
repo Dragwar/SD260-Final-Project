@@ -13,6 +13,8 @@ class SearchPage extends Component {
   componentDidMount() {
     this.queryInput.current.focus();
 
+    this.props.updateSearchBookIcons();
+
     /**
      * @description
      * When "Enter" is pressed then it fetches results based on query
@@ -61,7 +63,6 @@ class SearchPage extends Component {
    */
   handleQueryChange = () => {
     let userQuery = this.state.query;
-    console.log({ query: userQuery });
 
     if (userQuery !== "" && typeof userQuery === 'string') {
       BooksAPI.search(userQuery)
